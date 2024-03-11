@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Créer une Nouvelle Tâche</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <h1>Créer une Nouvelle Tâche</h1>
+    <form id="createTaskForm">
+        <label for="title">Titre:</label>
+        <input type="text" id="title" name="title" required>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea>
+        <label for="status">Status:</label>
+        <select id="status" name="status">
+            <option value="OPEN">Open</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="DONE">Done</option>
+        </select>
+        <button type="submit">Créer</button>
+    </form>
+
+    <button onclick="window.location.href='index.html';">Retour à la liste des tâches</button>
+
+    <script>
+        document.getElementById('createTaskForm').onsubmit = async function (event) {
+            event.preventDefault();
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const status = document.getElementById('status').value;
+
+            const response = await fetch('http://localhost:3000/tasks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, description, status })
+            });
+
+            if (response.ok) {
+                window.location.href = 'index.html'; // Redirect to task list on success
+            } else {
+                alert('Failed to create task');
+            }
+        };
+    </script>
+</body>
+</html>

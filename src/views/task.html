@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Détails de la Tâche</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<h1>Détails de la Tâche</h1>
+<button onclick="window.location.href='index.html';">Retour à la liste des tâches</button>
+<div id="taskDetails"></div>
+
+<script>
+function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+
+async function loadTaskDetails() {
+    const taskId = getQueryParam('id');
+    if (!taskId) {
+        window.location.href = 'index.html';
+        return;
+    }
+    try {
+        const response = await fetch(`http://localhost:3000/tasks/${taskId}`);
+        if (!response.ok) {
+            throw new Error('Tâche non trouvée');
+        }
+        const task = await response.json();
+        const taskDetails = document.getElementById('taskDetails');
+        taskDetails.innerHTML = `<p>Titre: ${task.title}</p><p>Description: ${task.description}</p><p>Status: ${task.status}</p>`;
+    } catch (error) {
+        console.error(error);
+        alert('Erreur lors du chargement des détails de la tâche');
+        window.location.href = 'index.html';
+    }
+}
+loadTaskDetails();
+</script>
+</body>
+</html>

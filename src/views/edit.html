@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Modifier la Tâche</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<h1>Modifier la Tâche</h1>
+<form id="editTaskForm">
+    <input type="hidden" id="taskId">
+    <label for="title">Titre:</label>
+    <input type="text" id="title" name="title" required>
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" required></textarea>
+    <label for="status">Statut:</label>
+    <select id="status" name="status">
+        <option value="OPEN">Ouverte</option>
+        <option value="IN_PROGRESS">En cours</option>
+        <option value="DONE">Terminée</option>
+    </select>
+    <button type="submit">Mettre à jour</button>
+</form>
+<button onclick="window.location.href='index.html';">Retour à la liste des tâches</button>
+
+<script>
+const taskId = new URLSearchParams(window.location.search).get('id');
+document.getElementById('taskId').value = taskId;
+
+// Charge les détails de la tâche pour pré-remplir le formulaire
+async function loadTaskDetails() {
+    if (!taskId) return;
+    const response = await fetch(`http://localhost:3000/tasks/${taskId}`);
+    const task = await response.json();
+    document.getElementById('title').value = task.title;
+    document.getElementById('description').value = task.description;
+    document.getElementById('status').value = task.status;
+}
+loadTaskDetails();
+
+// Gère la mise à jour de la tâche
+document.getElementById('editTaskForm').onsubmit = async function(event) {
+    event.preventDefault();
+    const updatedTask = {
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        status: document.getElementById('status').value
+    };
+    await fetch(`http://localhost:3000/tasks/${taskId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedTask)
+    });
+    window.location.href = 'index.html';
+};
+</script>
+</body>
+</html>

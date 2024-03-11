@@ -1,9 +1,12 @@
 import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ExampleModule } from './services/ExampleService/example.module';
+import { TaskModule } from './services/TaskService/task.module';
 import { DatabaseModule } from './services/DatabaseService/database.module';
-import { RequestCountMiddleware } from './middlewares/request-count.middleware';
+import { StatisticModule } from './services/statisticService/statistic.module';
+import { TaskLoggingModule } from './middlewares/task-logging.module';
 
 @Module({
   imports: [
@@ -14,15 +17,15 @@ import { RequestCountMiddleware } from './middlewares/request-count.middleware';
       password: 'your_password',
       database: 'your_database',
     }),
-    ExampleModule,
+    TaskModule,
+    TaskLoggingModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'src', 'views'),
+    }),
+    StatisticModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(RequestCountMiddleware)
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
-  }
 }
