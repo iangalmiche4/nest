@@ -30,6 +30,8 @@
 
 ```bash
 $ npm install
+
+$ npm run build
 ```
 
 ## Running the app
@@ -44,6 +46,7 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+Serveur is running on : http://localhost:3000/
 
 ## Test
 
